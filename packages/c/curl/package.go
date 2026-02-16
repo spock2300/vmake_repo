@@ -19,9 +19,10 @@ func Package(p *api.Package) {
 		SetDescription("Build shared library")
 
 	p.Option("ssl").
-		SetType(api.OptionString).
+		SetType(api.OptionChoice).
 		SetDefault("mbedtls").
-		SetDescription("SSL backend: mbedtls, openssl, or wolfssl")
+		SetValues("mbedtls", "openssl", "wolfssl").
+		SetDescription("SSL backend")
 
 	p.Build(func(ctx *api.PackageContext) {
 		ssl := ctx.String("ssl")
