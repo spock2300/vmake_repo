@@ -7,18 +7,11 @@ func Package(p *api.Package) {
 		SetDescription("Command line tool and library for transferring data with URLs").
 		SetLicense("curl").
 		SetGit("https://github.com/curl/curl.git").
-		SetLibs("curl")
+		SetLibs("curl").
+		DeclarePackages("official/zlib", "official/mbedtls", "official/openssl", "official/wolfssl")
 
 	p.AddVersion("8.6.0", "curl-8_6_0")
 	p.AddVersion("8.5.0", "curl-8_5_0")
-
-	p.OnRequire(func(ctx *api.PackageRequireContext) {
-		ctx.AddRequires(
-			"official/mbedtls",
-			"official/wolfssl",
-			"official/openssl",
-		)
-	})
 
 	p.Option("shared").
 		SetType(api.OptionBool).
@@ -32,6 +25,7 @@ func Package(p *api.Package) {
 
 	p.Build(func(ctx *api.PackageContext) {
 		ssl := ctx.String("ssl")
+		zlib := ctx.Dep("official/zlib")
 
 		args := []string{
 			"-DBUILD_SHARED_LIBS=" + ctx.BoolStr("shared"),
@@ -39,6 +33,8 @@ func Package(p *api.Package) {
 			"-DCURL_DISABLE_LDAPS=ON",
 			"-DBUILD_CURL_EXE=OFF",
 			"-DENABLE_TESTING=OFF",
+			"-DZLIB_INCLUDE_DIR=" + zlib.IncludeDir,
+			"-DZLIB_LIBRARY=" + zlib.LibDir + "/libz.a",
 		}
 
 		switch ssl {
