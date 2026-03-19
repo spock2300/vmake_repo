@@ -28,7 +28,12 @@ func Main(b *api.Builder) {
 	})
 
 	b.OnRequire(func(ctx *api.RequireContext) {
-		ctx.AddRequires("official/zlib")
+		ctx.AddRequires(
+			"official/zlib",
+			"official/mbedtls",
+			"official/openssl",
+			"official/wolfssl",
+		)
 	})
 
 	b.OnBuild(func(ctx *api.BuildContext) {
