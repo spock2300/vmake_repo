@@ -7,7 +7,10 @@ func Main(b *api.Builder) {
 		ctx.SetHomepage("https://www.trustedfirmware.org/projects/mbed-tls/").
 			SetDescription("Lightweight, open source SSL/TLS library").
 			SetLicense("Apache-2.0").
-			SetGit("https://github.com/Mbed-TLS/mbedtls.git").
+			SetGit(
+				"https://gitee.com/mirrors/mbedtls.git",
+				"https://github.com/Mbed-TLS/mbedtls.git",
+			).
 			SetLibs("mbedtls", "mbedx509", "mbedcrypto").
 			AddVersion("3.6.0", "v3.6.0").
 			AddVersion("2.28.8", "v2.28.8")

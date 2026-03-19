@@ -7,7 +7,10 @@ func Main(b *api.Builder) {
 		ctx.SetHomepage("http://www.zlib.net").
 			SetDescription("Compression library").
 			SetLicense("zlib").
-			SetGit("https://github.com/madler/zlib.git").
+			SetGit(
+				"https://gitee.com/mirrors/zlib.git",
+				"https://github.com/madler/zlib.git",
+			).
 			SetLibs("z").
 			AddVersion("1.3.1", "v1.3.1").
 			AddVersion("1.2.13", "v1.2.13")

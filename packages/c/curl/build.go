@@ -7,7 +7,10 @@ func Main(b *api.Builder) {
 		ctx.SetHomepage("https://curl.se/").
 			SetDescription("Command line tool and library for transferring data with URLs").
 			SetLicense("curl").
-			SetGit("https://github.com/curl/curl.git").
+			SetGit(
+				"https://gitee.com/mirrors/curl.git",
+				"https://github.com/curl/curl.git",
+			).
 			AddVersion("8.6.0", "curl-8_6_0").
 			AddVersion("8.5.0", "curl-8_5_0").
 			DeclarePackages("official/zlib", "official/mbedtls", "official/openssl", "official/wolfssl").

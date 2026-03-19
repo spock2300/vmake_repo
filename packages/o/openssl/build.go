@@ -7,7 +7,10 @@ func Main(b *api.Builder) {
 		ctx.SetHomepage("https://www.openssl.org/").
 			SetDescription("TLS/SSL and crypto library").
 			SetLicense("Apache-2.0").
-			SetGit("https://github.com/openssl/openssl.git").
+			SetGit(
+				"https://gitee.com/mirrors/openssl.git",
+				"https://github.com/openssl/openssl.git",
+			).
 			AddVersion("3.2.1", "openssl-3.2.1").
 			AddVersion("3.0.13", "openssl-3.0.13").
 			SetLibs("ssl", "crypto")

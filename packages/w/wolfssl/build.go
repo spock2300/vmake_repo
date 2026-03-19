@@ -7,7 +7,10 @@ func Main(b *api.Builder) {
 		ctx.SetHomepage("https://www.wolfssl.com/").
 			SetDescription("Lightweight SSL/TLS library optimized for embedded systems").
 			SetLicense("GPL-2.0-or-later").
-			SetGit("https://github.com/wolfSSL/wolfssl.git").
+			SetGit(
+				"https://gitee.com/mirrors/wolfssl.git",
+				"https://github.com/wolfSSL/wolfssl.git",
+			).
 			AddVersion("5.7.2", "v5.7.2-stable").
 			AddVersion("5.6.6", "v5.6.6-stable").
 			SetLibs("wolfssl")
