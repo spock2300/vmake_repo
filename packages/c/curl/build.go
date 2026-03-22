@@ -13,7 +13,6 @@ func Main(b *api.Builder) {
 			).
 			AddVersion("8.6.0", "curl-8_6_0").
 			AddVersion("8.5.0", "curl-8_5_0").
-			DeclarePackages("official/zlib", "official/mbedtls", "official/openssl", "official/wolfssl").
 			SetLibs("curl")
 	})
 
@@ -31,12 +30,10 @@ func Main(b *api.Builder) {
 	})
 
 	b.OnRequire(func(ctx *api.RequireContext) {
-		ctx.AddRequires(
-			"official/zlib",
-			"official/mbedtls",
-			"official/openssl",
-			"official/wolfssl",
-		)
+		ctx.AddRequires("official/zlib")
+		ctx.AddRequires(ctx.Equal("ssl", "mbedtls", "official/mbedtls"))
+		ctx.AddRequires(ctx.Equal("ssl", "openssl", "official/openssl"))
+		ctx.AddRequires(ctx.Equal("ssl", "wolfssl", "official/wolfssl"))
 	})
 
 	b.OnBuild(func(ctx *api.BuildContext) {
@@ -74,8 +71,8 @@ func Main(b *api.Builder) {
 						"-DCURL_USE_WOLFSSL=ON",
 						"-DCURL_USE_OPENSSL=OFF",
 						"-DCURL_USE_MBEDTLS=OFF",
-						"-DWOLFSSL_INCLUDE_DIRS="+wolfssl.IncludeDir,
-						"-DWOLFSSL_LIBRARY="+wolfssl.LibDir+"/libwolfssl.a",
+						"-DWolfSSL_INCLUDE_DIR="+wolfssl.IncludeDir,
+						"-DWolfSSL_LIBRARY="+wolfssl.LibDir+"/libwolfssl.a",
 					)
 				default:
 					openssl := pctx.Dep("official/openssl")
