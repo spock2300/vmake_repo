@@ -2,9 +2,9 @@ package main
 
 import "gitee.com/spock2300/vmake/pkg/api"
 
-func Main(b *api.Builder) {
-	b.OnPackage(func(ctx *api.PackageContext) {
-		ctx.SetHomepage("https://www.wolfssl.com/").
+func Main(p *api.Package) {
+	p.OnPackage(func(p *api.Package) {
+		p.SetHomepage("https://www.wolfssl.com/").
 			SetDescription("Lightweight SSL/TLS library optimized for embedded systems").
 			SetLicense("GPL-2.0-or-later").
 			SetGit(
@@ -16,24 +16,24 @@ func Main(b *api.Builder) {
 			SetLibs("wolfssl")
 	})
 
-	b.OnConfig(func(ctx *api.ConfigContext) {
+	p.OnConfig(func(ctx *api.ConfigContext) {
 		ctx.Option("shared").
 			SetType(api.OptionBool).
 			SetDefault(false).
 			SetDescription("Build shared library")
 	})
 
-	b.OnBuild(func(ctx *api.BuildContext) {
+	p.OnBuild(func(ctx *api.BuildContext) {
 		ctx.Target("wolfssl").
 			SetKind(api.TargetVoid).
-			SetBuildFunc(func(pctx *api.PackageContext) error {
-				pctx.CMakeConfigure(
-					"-DBUILD_SHARED_LIBS="+pctx.BoolStr("shared"),
+			SetBuildFunc(func(p *api.Package) error {
+				p.CMakeConfigure(
+					"-DBUILD_SHARED_LIBS="+p.BoolStr("shared"),
 					"-DWOLFSSL_EXAMPLES=OFF",
 					"-DWOLFSSL_CRYPT_TESTS=OFF",
 				)
-				pctx.CMakeBuild("-j4")
-				pctx.CMakeInstall()
+				p.CMakeBuild("-j4")
+				p.CMakeInstall()
 				return nil
 			})
 	})

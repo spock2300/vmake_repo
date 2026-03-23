@@ -2,9 +2,9 @@ package main
 
 import "gitee.com/spock2300/vmake/pkg/api"
 
-func Main(b *api.Builder) {
-	b.OnPackage(func(ctx *api.PackageContext) {
-		ctx.SetHomepage("https://www.openssl.org/").
+func Main(p *api.Package) {
+	p.OnPackage(func(p *api.Package) {
+		p.SetHomepage("https://www.openssl.org/").
 			SetDescription("TLS/SSL and crypto library").
 			SetLicense("Apache-2.0").
 			SetGit(
@@ -16,31 +16,31 @@ func Main(b *api.Builder) {
 			SetLibs("ssl", "crypto")
 	})
 
-	b.OnConfig(func(ctx *api.ConfigContext) {
+	p.OnConfig(func(ctx *api.ConfigContext) {
 		ctx.Option("shared").
 			SetType(api.OptionBool).
 			SetDefault(false).
 			SetDescription("Build shared library")
 	})
 
-	b.OnBuild(func(ctx *api.BuildContext) {
+	p.OnBuild(func(ctx *api.BuildContext) {
 		ctx.Target("openssl").
 			SetKind(api.TargetVoid).
-			SetBuildFunc(func(pctx *api.PackageContext) error {
+			SetBuildFunc(func(p *api.Package) error {
 				sharedOpt := "no-shared"
-				if pctx.Bool("shared") {
+				if p.Bool("shared") {
 					sharedOpt = "shared"
 				}
 
-				pctx.RunIn(pctx.SourceDir(), "./Configure",
-					"--prefix="+pctx.InstallDir(),
-					"--openssldir="+pctx.InstallDir()+"/ssl",
+				p.RunIn(p.SourceDir(), "./Configure",
+					"--prefix="+p.InstallDir(),
+					"--openssldir="+p.InstallDir()+"/ssl",
 					sharedOpt,
 					"no-tests",
 					"no-apps",
 				)
-				pctx.RunIn(pctx.SourceDir(), "make", "-j4")
-				pctx.RunIn(pctx.SourceDir(), "make", "install_sw", "install_ssldirs")
+				p.RunIn(p.SourceDir(), "make", "-j4")
+				p.RunIn(p.SourceDir(), "make", "install_sw", "install_ssldirs")
 				return nil
 			})
 	})

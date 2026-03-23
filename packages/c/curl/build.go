@@ -2,9 +2,9 @@ package main
 
 import "gitee.com/spock2300/vmake/pkg/api"
 
-func Main(b *api.Builder) {
-	b.OnPackage(func(ctx *api.PackageContext) {
-		ctx.SetHomepage("https://curl.se/").
+func Main(p *api.Package) {
+	p.OnPackage(func(p *api.Package) {
+		p.SetHomepage("https://curl.se/").
 			SetDescription("Command line tool and library for transferring data with URLs").
 			SetLicense("curl").
 			SetGit(
@@ -16,7 +16,7 @@ func Main(b *api.Builder) {
 			SetLibs("curl")
 	})
 
-	b.OnConfig(func(ctx *api.ConfigContext) {
+	p.OnConfig(func(ctx *api.ConfigContext) {
 		ctx.Option("shared").
 			SetType(api.OptionBool).
 			SetDefault(false).
@@ -29,22 +29,27 @@ func Main(b *api.Builder) {
 			SetDescription("SSL backend")
 	})
 
-	b.OnRequire(func(ctx *api.RequireContext) {
+	p.OnRequire(func(ctx *api.RequireContext) {
 		ctx.AddRequires("official/zlib")
 		ctx.AddRequires(ctx.Equal("ssl", "mbedtls", "official/mbedtls"))
 		ctx.AddRequires(ctx.Equal("ssl", "openssl", "official/openssl"))
 		ctx.AddRequires(ctx.Equal("ssl", "wolfssl", "official/wolfssl"))
 	})
 
-	b.OnBuild(func(ctx *api.BuildContext) {
+	p.OnBuild(func(ctx *api.BuildContext) {
 		ctx.Target("curl").
 			SetKind(api.TargetVoid).
-			SetBuildFunc(func(pctx *api.PackageContext) error {
-				ssl := pctx.String("ssl")
-				zlib := pctx.Dep("official/zlib")
+			AddPackages("official/zlib").
+			AddPackages(ctx.Equal("ssl", "mbedtls", "official/mbedtls")).
+			AddPackages(ctx.Equal("ssl", "openssl", "official/openssl")).
+			AddPackages(ctx.Equal("ssl", "wolfssl", "official/wolfssl")).
+			SetBuildFunc(func(p *api.Package) error {
+				ssl := p.String("ssl")
+				deps := p.Deps()
+				zlib := deps["official/zlib"]
 
 				args := []string{
-					"-DBUILD_SHARED_LIBS=" + pctx.BoolStr("shared"),
+					"-DBUILD_SHARED_LIBS=" + p.BoolStr("shared"),
 					"-DCURL_DISABLE_LDAP=ON",
 					"-DCURL_DISABLE_LDAPS=ON",
 					"-DBUILD_CURL_EXE=OFF",
@@ -55,7 +60,7 @@ func Main(b *api.Builder) {
 
 				switch ssl {
 				case "mbedtls":
-					mbedtls := pctx.Dep("official/mbedtls")
+					mbedtls := deps["official/mbedtls"]
 					args = append(args,
 						"-DCURL_USE_MBEDTLS=ON",
 						"-DCURL_USE_OPENSSL=OFF",
@@ -66,7 +71,7 @@ func Main(b *api.Builder) {
 						"-DMBEDCRYPTO_LIBRARY="+mbedtls.LibDir+"/libmbedcrypto.a",
 					)
 				case "wolfssl":
-					wolfssl := pctx.Dep("official/wolfssl")
+					wolfssl := deps["official/wolfssl"]
 					args = append(args,
 						"-DCURL_USE_WOLFSSL=ON",
 						"-DCURL_USE_OPENSSL=OFF",
@@ -75,7 +80,7 @@ func Main(b *api.Builder) {
 						"-DWolfSSL_LIBRARY="+wolfssl.LibDir+"/libwolfssl.a",
 					)
 				default:
-					openssl := pctx.Dep("official/openssl")
+					openssl := deps["official/openssl"]
 					args = append(args,
 						"-DCURL_USE_OPENSSL=ON",
 						"-DCURL_USE_MBEDTLS=OFF",
@@ -86,9 +91,9 @@ func Main(b *api.Builder) {
 					)
 				}
 
-				pctx.CMakeConfigure(args...)
-				pctx.CMakeBuild("-j4")
-				pctx.CMakeInstall()
+				p.CMakeConfigure(args...)
+				p.CMakeBuild("-j4")
+				p.CMakeInstall()
 				return nil
 			})
 	})
