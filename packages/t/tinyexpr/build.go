@@ -8,7 +8,8 @@ func Main(p *api.Package) {
 			SetDescription("Tiny expression evaluator for C").
 			SetLicense("zlib").
 			SetGit("https://github.com/codeplea/tinyexpr.git").
-			AddVersion("1.0.0", "v1.0")
+			SetLibs("tinyexpr", "m").
+			AddVersion("1.0.0", "9907207e5def0fabdb60c443517b0d9e9d521393")
 	})
 
 	p.OnBuild(func(ctx *api.BuildContext) {
