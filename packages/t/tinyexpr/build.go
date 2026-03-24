@@ -16,6 +16,6 @@ func Main(p *api.Package) {
 		ctx.Target("tinyexpr").
 			SetKind(api.TargetStatic).
 			AddFiles("tinyexpr.c").
-			AddPublicIncludes(".")
+			AddPublicIncludes(".", "@tinyexpr.h")
 	})
 }

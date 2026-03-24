@@ -16,6 +16,6 @@ func Main(p *api.Package) {
 		ctx.Target("sds").
 			SetKind(api.TargetStatic).
 			AddFiles("sds.c").
-			AddPublicIncludes(".")
+			AddPublicIncludes(".", "@*.h")
 	})
 }
