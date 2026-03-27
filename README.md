@@ -40,7 +40,7 @@ func Main(b *api.Builder) {
         ctx.Target("app").
             SetKind(api.TargetBinary).
             AddFiles("src/*.c").
-            AddPackages("official/zlib")
+            AddDeps("official/zlib")
     })
 }
 ```
