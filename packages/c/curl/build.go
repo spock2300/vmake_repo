@@ -54,6 +54,7 @@ func Main(p *api.Package) {
 					"-DCURL_DISABLE_LDAPS=ON",
 					"-DBUILD_CURL_EXE=OFF",
 					"-DENABLE_TESTING=OFF",
+					"-DCMAKE_DEBUG_POSTFIX=",
 					"-DZLIB_INCLUDE_DIR=" + zlib.IncludeDir,
 					"-DZLIB_LIBRARY=" + zlib.LibDir + "/libz.a",
 				}

@@ -11,6 +11,7 @@ func Main(p *api.Package) {
 				"https://gitee.com/mirrors/mbedtls.git",
 				"https://github.com/Mbed-TLS/mbedtls.git",
 			).
+			SetSubmodules(true).
 			SetLibs("mbedtls", "mbedx509", "mbedcrypto").
 			AddVersion("3.6.0", "v3.6.0").
 			AddVersion("2.28.8", "v2.28.8")
