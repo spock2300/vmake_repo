@@ -1,6 +1,12 @@
 package main
 
-import "gitee.com/spock2300/vmake/pkg/api"
+import (
+	"os"
+	"path/filepath"
+	"strings"
+
+	"gitee.com/spock2300/vmake/pkg/api"
+)
 
 func Main(p *api.Package) {
 	p.OnPackage(func(p *api.Package) {
@@ -32,6 +38,14 @@ func Main(p *api.Package) {
 					"-DUSE_SHARED_MBEDTLS_LIBRARY=" + p.BoolStr("shared"),
 					"-DENABLE_PROGRAMS=OFF",
 					"-DENABLE_TESTING=OFF",
+				}
+				configPath := filepath.Join(p.SrcDir(), "include", "mbedtls", "config.h")
+				raw, _ := os.ReadFile(configPath)
+				if raw != nil {
+					s := strings.Replace(string(raw),
+						"//#define MBEDTLS_SSL_DTLS_SRTP\n",
+						"#define MBEDTLS_SSL_DTLS_SRTP\n", 1)
+					os.WriteFile(configPath, []byte(s), 0644)
 				}
 				p.CMakeConfigure(args...)
 				p.CMakeBuild("-j4")
