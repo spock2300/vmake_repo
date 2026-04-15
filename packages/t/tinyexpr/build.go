@@ -16,6 +16,7 @@ func Main(p *api.Package) {
 		ctx.Target("tinyexpr").
 			SetKind(api.TargetStatic).
 			AddFiles("tinyexpr.c").
-			AddPublicIncludes(".", "@tinyexpr.h")
+			AddPublicIncludes(".", "@tinyexpr.h").
+			RemoveCFlags("-Werror", "-Wmissing-prototypes", "-Wmissing-declarations", "-Wold-style-definition", "-Wshadow")
 	})
 }

@@ -16,6 +16,7 @@ func Main(p *api.Package) {
 		ctx.Target("sds").
 			SetKind(api.TargetStatic).
 			AddFiles("sds.c").
-			AddPublicIncludes(".", "@*.h")
+			AddPublicIncludes(".", "@*.h").
+			RemoveCFlags("-Werror", "-Wmissing-prototypes", "-Wmissing-declarations", "-Wold-style-definition", "-Wshadow")
 	})
 }
