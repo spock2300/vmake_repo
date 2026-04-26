@@ -16,7 +16,6 @@ func Main(p *api.Package) {
 				"https://github.com/sctplab/usrsctp.git",
 			).
 			SetSubmodules(false).
-			SetLibs("usrsctp").
 			AddVersion("0.9.5", "0.9.5.0")
 	})
 
@@ -30,6 +29,7 @@ func Main(p *api.Package) {
 	p.OnBuild(func(ctx *api.BuildContext) {
 		ctx.Target("usrsctp").
 			SetKind(api.TargetVoid).
+			AddProvidedLibs("usrsctp").
 			SetBuildFunc(func(p *api.Package) error {
 				args := []string{
 					"-DENABLE_PROGRAMS=OFF",

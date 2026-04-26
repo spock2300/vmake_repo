@@ -16,7 +16,6 @@ func Main(p *api.Package) {
 				"https://gitee.com/mirrors/libsrtp2.git",
 				"https://github.com/cisco/libsrtp.git",
 			).
-			SetLibs("srtp2").
 			AddVersion("2.5.0", "v2.5.0").
 			AddVersion("2.4.2", "v2.4.2")
 	})
@@ -31,6 +30,7 @@ func Main(p *api.Package) {
 	p.OnBuild(func(ctx *api.BuildContext) {
 		ctx.Target("srtp2").
 			SetKind(api.TargetVoid).
+			AddProvidedLibs("srtp2").
 			SetBuildFunc(func(p *api.Package) error {
 				args := []string{
 					"-DENABLE_TESTS=OFF",

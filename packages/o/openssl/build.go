@@ -12,8 +12,7 @@ func Main(p *api.Package) {
 				"https://github.com/openssl/openssl.git",
 			).
 			AddVersion("3.2.1", "openssl-3.2.1").
-			AddVersion("3.0.13", "openssl-3.0.13").
-			SetLibs("ssl", "crypto")
+			AddVersion("3.0.13", "openssl-3.0.13")
 	})
 
 	p.OnConfig(func(ctx *api.ConfigContext) {
@@ -26,6 +25,7 @@ func Main(p *api.Package) {
 	p.OnBuild(func(ctx *api.BuildContext) {
 		ctx.Target("openssl").
 			SetKind(api.TargetVoid).
+			AddProvidedLibs("ssl", "crypto").
 			SetBuildFunc(func(p *api.Package) error {
 				sharedOpt := "no-shared"
 				if p.Bool("shared") {

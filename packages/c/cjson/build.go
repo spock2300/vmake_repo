@@ -17,7 +17,6 @@ func Main(p *api.Package) {
 				"https://gitee.com/mirrors/cJSON.git",
 				"https://github.com/DaveGamble/cJSON.git",
 			).
-			SetLibs("cjson").
 			AddVersion("1.7.18", "v1.7.18").
 			AddVersion("1.7.17", "v1.7.17")
 	})
@@ -32,6 +31,7 @@ func Main(p *api.Package) {
 	p.OnBuild(func(ctx *api.BuildContext) {
 		ctx.Target("cjson").
 			SetKind(api.TargetVoid).
+			AddProvidedLibs("cjson").
 			SetBuildFunc(func(p *api.Package) error {
 				args := []string{
 					"-DENABLE_CJSON_TEST=OFF",

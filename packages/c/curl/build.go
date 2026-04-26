@@ -12,8 +12,7 @@ func Main(p *api.Package) {
 				"https://github.com/curl/curl.git",
 			).
 			AddVersion("8.6.0", "curl-8_6_0").
-			AddVersion("8.5.0", "curl-8_5_0").
-			SetLibs("curl")
+			AddVersion("8.5.0", "curl-8_5_0")
 	})
 
 	p.OnConfig(func(ctx *api.ConfigContext) {
@@ -39,6 +38,7 @@ func Main(p *api.Package) {
 	p.OnBuild(func(ctx *api.BuildContext) {
 		ctx.Target("curl").
 			SetKind(api.TargetVoid).
+			AddProvidedLibs("curl").
 			AddDeps("official/zlib").
 			AddDeps(ctx.Equal("ssl", "mbedtls", "official/mbedtls")).
 			AddDeps(ctx.Equal("ssl", "openssl", "official/openssl")).

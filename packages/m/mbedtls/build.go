@@ -18,7 +18,6 @@ func Main(p *api.Package) {
 				"https://github.com/Mbed-TLS/mbedtls.git",
 			).
 			SetSubmodules(true).
-			SetLibs("mbedtls", "mbedx509", "mbedcrypto").
 			AddVersion("3.6.0", "v3.6.0").
 			AddVersion("2.28.8", "v2.28.8")
 	})
@@ -33,6 +32,7 @@ func Main(p *api.Package) {
 	p.OnBuild(func(ctx *api.BuildContext) {
 		ctx.Target("mbedtls").
 			SetKind(api.TargetVoid).
+			AddProvidedLibs("mbedtls", "mbedx509", "mbedcrypto").
 			SetBuildFunc(func(p *api.Package) error {
 				args := []string{
 					"-DUSE_SHARED_MBEDTLS_LIBRARY=" + p.BoolStr("shared"),
