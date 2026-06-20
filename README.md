@@ -29,7 +29,7 @@ In your project's `build.go`:
 ```go
 package main
 
-import "gitee.com/spock2300/vmake/pkg/api"
+import "github.com/spock2300/vmake/pkg/api"
 
 func Main(b *api.Builder) {
     b.OnRequire(func(ctx *api.RequireContext) {
