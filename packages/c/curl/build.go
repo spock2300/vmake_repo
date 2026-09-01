@@ -42,14 +42,16 @@ func Main(p *api.Package) {
 	})
 
 	p.OnBuild(func(ctx *api.BuildContext) {
-		ctx.Target("curl").
+		ssl := ctx.String("ssl")
+		sslDep := map[string]string{"mbedtls": "official/mbedtls", "openssl": "official/openssl", "wolfssl": "official/wolfssl"}[ssl]
+		target := ctx.Target("curl").
 			SetKind(api.TargetVoid).
 			AddProvidedLibs("curl").
-			AddDeps("official/zlib").
-			AddDeps(ctx.Equal("ssl", "mbedtls", "official/mbedtls")).
-			AddDeps(ctx.Equal("ssl", "openssl", "official/openssl")).
-			AddDeps(ctx.Equal("ssl", "wolfssl", "official/wolfssl")).
-			SetBuildFunc(func(p *api.Package) error {
+			AddDeps("official/zlib")
+		if sslDep != "" {
+			target.AddDeps(sslDep)
+		}
+		target.SetBuildFunc(func(p *api.Package) error {
 				ssl := p.String("ssl")
 				deps := p.Deps()
 				zlib := deps["official/zlib"]
