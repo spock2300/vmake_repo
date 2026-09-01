@@ -30,9 +30,15 @@ func Main(p *api.Package) {
 
 	p.OnRequire(func(ctx *api.RequireContext) {
 		ctx.AddRequires("official/zlib")
-		ctx.AddRequires(ctx.Equal("ssl", "mbedtls", "official/mbedtls"))
-		ctx.AddRequires(ctx.Equal("ssl", "openssl", "official/openssl"))
-		ctx.AddRequires(ctx.Equal("ssl", "wolfssl", "official/wolfssl"))
+		if ctx.When("ssl", "mbedtls") {
+			ctx.AddRequires("official/mbedtls")
+		}
+		if ctx.When("ssl", "openssl") {
+			ctx.AddRequires("official/openssl")
+		}
+		if ctx.When("ssl", "wolfssl") {
+			ctx.AddRequires("official/wolfssl")
+		}
 	})
 
 	p.OnBuild(func(ctx *api.BuildContext) {
