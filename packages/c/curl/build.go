@@ -52,58 +52,58 @@ func Main(p *api.Package) {
 			target.AddDeps(sslDep)
 		}
 		target.SetBuildFunc(func(p *api.Package) error {
-				ssl := p.String("ssl")
-				deps := p.Deps()
-				zlib := deps["official/zlib"]
+			ssl := p.String("ssl")
+			deps := p.Deps()
+			zlib := deps["official/zlib"]
 
-				args := []string{
-					"-DBUILD_SHARED_LIBS=" + p.BoolStr("shared"),
-					"-DCURL_DISABLE_LDAP=ON",
-					"-DCURL_DISABLE_LDAPS=ON",
-					"-DBUILD_CURL_EXE=OFF",
-					"-DENABLE_TESTING=OFF",
-					"-DCMAKE_DEBUG_POSTFIX=",
-					"-DZLIB_INCLUDE_DIR=" + zlib.IncludeDir,
-					"-DZLIB_LIBRARY=" + zlib.LibDir + "/libz.a",
-				}
+			args := []string{
+				"-DBUILD_SHARED_LIBS=" + p.BoolStr("shared"),
+				"-DCURL_DISABLE_LDAP=ON",
+				"-DCURL_DISABLE_LDAPS=ON",
+				"-DBUILD_CURL_EXE=OFF",
+				"-DENABLE_TESTING=OFF",
+				"-DCMAKE_DEBUG_POSTFIX=",
+				"-DZLIB_INCLUDE_DIR=" + zlib.IncludeDir,
+				"-DZLIB_LIBRARY=" + zlib.LibDir + "/libz.a",
+			}
 
-				switch ssl {
-				case "mbedtls":
-					mbedtls := deps["official/mbedtls"]
-					args = append(args,
-						"-DCURL_USE_MBEDTLS=ON",
-						"-DCURL_USE_OPENSSL=OFF",
-						"-DCURL_USE_WOLFSSL=OFF",
-						"-DMBEDTLS_INCLUDE_DIRS="+mbedtls.IncludeDir,
-						"-DMBEDTLS_LIBRARY="+mbedtls.LibDir+"/libmbedtls.a",
-						"-DMBEDX509_LIBRARY="+mbedtls.LibDir+"/libmbedx509.a",
-						"-DMBEDCRYPTO_LIBRARY="+mbedtls.LibDir+"/libmbedcrypto.a",
-					)
-				case "wolfssl":
-					wolfssl := deps["official/wolfssl"]
-					args = append(args,
-						"-DCURL_USE_WOLFSSL=ON",
-						"-DCURL_USE_OPENSSL=OFF",
-						"-DCURL_USE_MBEDTLS=OFF",
-						"-DWolfSSL_INCLUDE_DIR="+wolfssl.IncludeDir,
-						"-DWolfSSL_LIBRARY="+wolfssl.LibDir+"/libwolfssl.a",
-					)
-				default:
-					openssl := deps["official/openssl"]
-					args = append(args,
-						"-DCURL_USE_OPENSSL=ON",
-						"-DCURL_USE_MBEDTLS=OFF",
-						"-DCURL_USE_WOLFSSL=OFF",
-						"-DOPENSSL_INCLUDE_DIR="+openssl.IncludeDir,
-						"-DOPENSSL_CRYPTO_LIBRARY="+openssl.LibDir+"/libcrypto.a",
-						"-DOPENSSL_SSL_LIBRARY="+openssl.LibDir+"/libssl.a",
-					)
-				}
+			switch ssl {
+			case "mbedtls":
+				mbedtls := deps["official/mbedtls"]
+				args = append(args,
+					"-DCURL_USE_MBEDTLS=ON",
+					"-DCURL_USE_OPENSSL=OFF",
+					"-DCURL_USE_WOLFSSL=OFF",
+					"-DMBEDTLS_INCLUDE_DIRS="+mbedtls.IncludeDir,
+					"-DMBEDTLS_LIBRARY="+mbedtls.LibDir+"/libmbedtls.a",
+					"-DMBEDX509_LIBRARY="+mbedtls.LibDir+"/libmbedx509.a",
+					"-DMBEDCRYPTO_LIBRARY="+mbedtls.LibDir+"/libmbedcrypto.a",
+				)
+			case "wolfssl":
+				wolfssl := deps["official/wolfssl"]
+				args = append(args,
+					"-DCURL_USE_WOLFSSL=ON",
+					"-DCURL_USE_OPENSSL=OFF",
+					"-DCURL_USE_MBEDTLS=OFF",
+					"-DWolfSSL_INCLUDE_DIR="+wolfssl.IncludeDir,
+					"-DWolfSSL_LIBRARY="+wolfssl.LibDir+"/libwolfssl.a",
+				)
+			default:
+				openssl := deps["official/openssl"]
+				args = append(args,
+					"-DCURL_USE_OPENSSL=ON",
+					"-DCURL_USE_MBEDTLS=OFF",
+					"-DCURL_USE_WOLFSSL=OFF",
+					"-DOPENSSL_INCLUDE_DIR="+openssl.IncludeDir,
+					"-DOPENSSL_CRYPTO_LIBRARY="+openssl.LibDir+"/libcrypto.a",
+					"-DOPENSSL_SSL_LIBRARY="+openssl.LibDir+"/libssl.a",
+				)
+			}
 
-				p.CMakeConfigure(args...)
-				p.CMakeBuild("-j4")
-				p.CMakeInstall()
-				return nil
-			})
+			p.CMakeConfigure(args...)
+			p.CMakeBuild("-j4")
+			p.CMakeInstall()
+			return nil
+		})
 	})
 }
