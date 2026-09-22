@@ -1,11 +1,6 @@
 package main
 
-import (
-	"runtime"
-	"strconv"
-
-	"github.com/spock2300/vmake/pkg/api"
-)
+import "github.com/spock2300/vmake/pkg/api"
 
 func Main(p *api.Package) {
 	p.OnPackage(func(p *api.Package) {
@@ -35,10 +30,10 @@ func Main(p *api.Package) {
 					"-DENABLE_PROGRAMS=OFF",
 					"-DENABLE_TESTS=OFF",
 					"-DBUILD_SHARED_LIBS=" + p.BoolStr("shared"),
-					"-DCMAKE_C_FLAGS=-Wno-maybe-uninitialized",
+					"-DCMAKE_C_FLAGS=" + p.MergedCFlags("-Wno-maybe-uninitialized"),
 				}
 				p.CMakeConfigure(args...)
-				p.CMakeBuild("-j" + strconv.Itoa(runtime.NumCPU()))
+				p.CMakeBuild()
 				p.CMakeInstall()
 				return nil
 			})

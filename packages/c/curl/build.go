@@ -60,6 +60,9 @@ func Main(p *api.Package) {
 				"-DBUILD_SHARED_LIBS=" + p.BoolStr("shared"),
 				"-DCURL_DISABLE_LDAP=ON",
 				"-DCURL_DISABLE_LDAPS=ON",
+				"-DCURL_USE_LIBPSL=OFF",
+				"-DCURL_USE_LIBSSH2=OFF",
+				"-DUSE_LIBIDN2=OFF",
 				"-DBUILD_CURL_EXE=OFF",
 				"-DENABLE_TESTING=OFF",
 				"-DCMAKE_DEBUG_POSTFIX=",
@@ -101,7 +104,7 @@ func Main(p *api.Package) {
 			}
 
 			p.CMakeConfigure(args...)
-			p.CMakeBuild("-j4")
+			p.CMakeBuild()
 			p.CMakeInstall()
 			return nil
 		})

@@ -10,6 +10,10 @@ Add this repository to VMake:
 vmake repo add official git@gitee.com:spock2300/vmake_repo.git
 ```
 
+## CMake Packages
+
+CMake wrappers use VMake's `CMakeConfigure`, `CMakeBuild` and `CMakeInstall` APIs. These APIs manage resolved tools, global flags, the `BuildDir/cmake` build tree, the installation prefix and build parallelism. Use `CMakeBuildDir()` and `CMakeInstallDir()` when package-specific steps need those paths; merge project-specific C flags with `MergedCFlags(...)` before explicitly setting `CMAKE_C_FLAGS`. Set `CMAKE_BUILD_PARALLEL_LEVEL` to limit parallel jobs without changing a wrapper.
+
 ## Available Packages
 
 | Package | Description | Build System | Options |
@@ -110,6 +114,7 @@ Command line tool and library for transferring data with URLs.
 - Homepage: https://curl.se/
 - License: curl
 - Versions: 8.6.0, 8.5.0
+- Dependencies: zlib and the selected TLS backend. Host libpsl, libssh2 and libidn2 auto-detection is disabled; PSL cookie-domain checks, SCP/SFTP and libidn2-based internationalized domain names are not included.
 - Options:
   - `shared` (bool): Build shared library (default: false)
   - `ssl` (string): SSL backend (default: mbedtls)

@@ -32,7 +32,7 @@ func Main(p *api.Package) {
 					"-DWOLFSSL_EXAMPLES=OFF",
 					"-DWOLFSSL_CRYPT_TESTS=OFF",
 				)
-				p.CMakeBuild("-j4")
+				p.CMakeBuild()
 				p.CMakeInstall()
 				return nil
 			})

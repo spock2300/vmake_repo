@@ -48,7 +48,7 @@ func Main(p *api.Package) {
 					os.WriteFile(configPath, []byte(s), 0644)
 				}
 				p.CMakeConfigure(args...)
-				p.CMakeBuild("-j4")
+				p.CMakeBuild()
 				p.CMakeInstall()
 				return nil
 			})

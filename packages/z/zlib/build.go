@@ -30,7 +30,7 @@ func Main(p *api.Package) {
 				p.CMakeConfigure(
 					"-DBUILD_SHARED_LIBS=" + p.BoolStr("shared"),
 				)
-				p.CMakeBuild("-j4")
+				p.CMakeBuild()
 				p.CMakeInstall()
 				return nil
 			})

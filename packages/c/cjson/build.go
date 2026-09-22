@@ -2,8 +2,6 @@ package main
 
 import (
 	"path/filepath"
-	"runtime"
-	"strconv"
 
 	"github.com/spock2300/vmake/pkg/api"
 )
@@ -39,10 +37,10 @@ func Main(p *api.Package) {
 					"-DCMAKE_INSTALL_INCLUDEDIR=include",
 				}
 				p.CMakeConfigure(args...)
-				p.CMakeBuild("-j" + strconv.Itoa(runtime.NumCPU()))
+				p.CMakeBuild()
 				p.CMakeInstall()
-				src := filepath.Join(p.InstallDir(), "include", "cjson", "cJSON.h")
-				dst := filepath.Join(p.InstallDir(), "include", "cJSON.h")
+				src := filepath.Join(p.CMakeInstallDir(), "include", "cjson", "cJSON.h")
+				dst := filepath.Join(p.CMakeInstallDir(), "include", "cJSON.h")
 				api.CopyFile(src, dst)
 				return nil
 			})
