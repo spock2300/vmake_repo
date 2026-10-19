@@ -17,7 +17,6 @@ func Main(p *api.Package) {
 
 	p.OnConfig(func(ctx *api.ConfigContext) {
 		ctx.Option("shared").
-			SetType(api.OptionBool).
 			SetDefault(false).
 			SetDescription("Build shared library")
 	})
@@ -25,10 +24,11 @@ func Main(p *api.Package) {
 	p.OnBuild(func(ctx *api.BuildContext) {
 		ctx.Target("wolfssl").
 			SetKind(api.TargetVoid).
-			AddProvidedLibs("wolfssl").
+			AddProvidedLibs("wolfssl", "m").
 			SetBuildFunc(func(p *api.Package) error {
 				p.CMakeConfigure(
 					"-DBUILD_SHARED_LIBS="+p.BoolStr("shared"),
+					"-DWOLFSSL_CURL=yes",
 					"-DWOLFSSL_EXAMPLES=OFF",
 					"-DWOLFSSL_CRYPT_TESTS=OFF",
 				)

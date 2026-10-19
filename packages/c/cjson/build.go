@@ -21,7 +21,6 @@ func Main(p *api.Package) {
 
 	p.OnConfig(func(ctx *api.ConfigContext) {
 		ctx.Option("shared").
-			SetType(api.OptionBool).
 			SetDefault(false).
 			SetDescription("Build shared library")
 	})

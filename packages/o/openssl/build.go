@@ -1,6 +1,11 @@
 package main
 
-import "github.com/spock2300/vmake/pkg/api"
+import (
+	"os"
+	"path/filepath"
+
+	"github.com/spock2300/vmake/pkg/api"
+)
 
 func Main(p *api.Package) {
 	p.OnPackage(func(p *api.Package) {
@@ -17,7 +22,6 @@ func Main(p *api.Package) {
 
 	p.OnConfig(func(ctx *api.ConfigContext) {
 		ctx.Option("shared").
-			SetType(api.OptionBool).
 			SetDefault(false).
 			SetDescription("Build shared library")
 	})
@@ -32,16 +36,19 @@ func Main(p *api.Package) {
 					sharedOpt = "shared"
 				}
 
-				p.RunIn(p.SourceDir(), "./Configure",
-					"--prefix="+p.InstallDir(),
-					"--openssldir="+p.InstallDir()+"/ssl",
-					sharedOpt,
-					"no-tests",
-					"no-apps",
-				)
-				p.RunIn(p.SourceDir(), "make", "-j4")
-				p.RunIn(p.SourceDir(), "make", "install_sw", "install_ssldirs")
-				return nil
+				if _, err := os.Stat(filepath.Join(p.BuildDir(), "Makefile")); err != nil {
+					p.Run(filepath.Join(p.SrcDir(), "Configure"),
+						"--prefix="+p.InstallDir(),
+						"--openssldir="+p.InstallDir()+"/ssl",
+						sharedOpt,
+						"no-tests",
+						"no-apps",
+					)
+				}
+				if err := p.Make(); err != nil {
+					return err
+				}
+				return p.Make("install_sw", "install_ssldirs")
 			})
 	})
 }

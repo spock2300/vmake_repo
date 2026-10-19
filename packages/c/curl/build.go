@@ -17,41 +17,29 @@ func Main(p *api.Package) {
 
 	p.OnConfig(func(ctx *api.ConfigContext) {
 		ctx.Option("shared").
-			SetType(api.OptionBool).
 			SetDefault(false).
 			SetDescription("Build shared library")
 
 		ctx.Option("ssl").
-			SetType(api.OptionChoice).
 			SetDefault("mbedtls").
 			SetValues("mbedtls", "openssl", "wolfssl").
 			SetDescription("SSL backend")
 	})
 
 	p.OnRequire(func(ctx *api.RequireContext) {
-		ctx.AddRequires("official/zlib")
-		if ctx.When("ssl", "mbedtls") {
-			ctx.AddRequires("official/mbedtls")
-		}
-		if ctx.When("ssl", "openssl") {
-			ctx.AddRequires("official/openssl")
-		}
-		if ctx.When("ssl", "wolfssl") {
-			ctx.AddRequires("official/wolfssl")
-		}
+		ctx.AddRequires("official/zlib", ctx.Select("ssl", map[string]string{
+			"mbedtls": "official/mbedtls",
+			"openssl": "official/openssl",
+			"wolfssl": "official/wolfssl",
+		}))
 	})
 
 	p.OnBuild(func(ctx *api.BuildContext) {
-		ssl := ctx.String("ssl")
-		sslDep := map[string]string{"mbedtls": "official/mbedtls", "openssl": "official/openssl", "wolfssl": "official/wolfssl"}[ssl]
-		target := ctx.Target("curl").
+		ctx.Target("curl").
 			SetKind(api.TargetVoid).
 			AddProvidedLibs("curl").
-			AddDeps("official/zlib")
-		if sslDep != "" {
-			target.AddDeps(sslDep)
-		}
-		target.SetBuildFunc(func(p *api.Package) error {
+			UseRequires().
+			SetBuildFunc(func(p *api.Package) error {
 			ssl := p.String("ssl")
 			deps := p.Deps()
 			zlib := deps["official/zlib"]
